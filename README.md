@@ -26,35 +26,53 @@ For context - Here's how it looked in Monarch for me:
 
 ## 🚀 Usage
 
+
 1. Open Monarch in your browser and navigate to **Settings → Categories**.
 2. Open your browser console (**Right click → Inspect → Console**).
 3. Paste the contents of [`deleteCategory.js`](deleteCategory.js) into the console.
 4. Run the function:
 
+
 ```js
 // Example: delete "ELECTRONIC WITHDRAWAL" 5 times
 await deleteCategory("ELECTRONIC WITHDRAWAL", 5);
 
+
 // Example: delete "DIVIDEND" once
 await deleteCategory("DIVIDEND");
+
+
+// Advanced: configure wait times (in ms)
+// waitDeleteMs = max wait for "Delete" button
+// waitConfirmMs = max wait for "Delete Category" button
+await deleteCategory("PAYMENT", 3, 8000, 12000);
 ```
 
-The script will:
-- Find the matching category row  
-- Click to open the modal  
-- Click **Delete**, then **Delete Category**  
-- Wait between steps so the UI has time to update  
-- Repeat `N` times if specified  
+
+### Parameters
+- **key** *(string, required)* → The text of the category you want to delete.
+- **times** *(number, default = 1)* → How many times to repeat the delete process.
+- **waitDeleteMs** *(number, default = 5000)* → Max time to wait for the first **Delete** button.
+- **waitConfirmMs** *(number, default = 5000)* → Max time to wait for the **Delete Category** confirmation button.
+
+
+👉 In most cases, you’ll only need to provide `key` and optionally `times`. The wait times are configurable if your UI is slower to load.
+
 
 ---
+
 
 ## ⚠️ Disclaimer
 
-This script is **unofficial** and not affiliated with Monarch Money.  
+
+This script is **unofficial** and not affiliated with Monarch Money.
 Use at your own risk. Make sure you know what categories you’re deleting — the action cannot be undone.
+
 
 ---
 
+
 ## 📜 License
+
 
 MIT License — feel free to copy, modify, and share.
