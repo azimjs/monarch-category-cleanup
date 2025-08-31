@@ -1,5 +1,7 @@
-async function deleteCategory(key, times = 1) {
+async function deleteCategory(key, times = 1, waitDeleteMs = 5000, waitConfirmMs = 5000) {
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  const maxDeleteAttempts = Math.ceil(waitDeleteMs / 1000);
+  const maxConfirmAttempts = Math.ceil(waitConfirmMs / 1000);
 
   for (let i = 0; i < times; i++) {
     const span = Array.from(
@@ -15,9 +17,14 @@ async function deleteCategory(key, times = 1) {
     span.click();
     await sleep(1000); // wait for modal
 
-    // Step 2: click the "Delete" button
-    const deleteBtn = Array.from(document.querySelectorAll('button'))
-      .find(el => el.textContent.trim() === 'Delete');
+    // Step 2: wait until "Delete" button appears
+    let deleteBtn;
+    for (let attempt = 0; attempt < maxDeleteAttempts; attempt++) {
+      deleteBtn = Array.from(document.querySelectorAll('button'))
+        .find(el => el.textContent.trim() === 'Delete');
+      if (deleteBtn) break;
+      await sleep(1000);
+    }
     if (!deleteBtn) {
       console.warn(`Delete button not found on iteration ${i + 1}`);
       break;
@@ -25,9 +32,14 @@ async function deleteCategory(key, times = 1) {
     deleteBtn.click();
     await sleep(1000); // wait for confirm modal
 
-    // Step 3: click the "Delete Category" button
-    const confirmBtn = Array.from(document.querySelectorAll('button'))
-      .find(el => el.textContent.trim() === 'Delete Category');
+    // Step 3: wait until "Delete Category" button appears
+    let confirmBtn;
+    for (let attempt = 0; attempt < maxConfirmAttempts; attempt++) {
+      confirmBtn = Array.from(document.querySelectorAll('button'))
+        .find(el => el.textContent.trim() === 'Delete Category');
+      if (confirmBtn) break;
+      await sleep(1000);
+    }
     if (!confirmBtn) {
       console.warn(`Delete Category button not found on iteration ${i + 1}`);
       break;
